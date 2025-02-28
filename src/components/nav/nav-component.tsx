@@ -32,7 +32,7 @@ export const Nav = () => {
     if (isAuthenticated) {
       commonLinks.push(
         {title: 'Profile', link: '/profile', id: 2},
-        {title: 'Sign out', link: '/sign-out', id: 3},
+        {title: 'Sign out', link: '/', id: 3},
       );
     } else {
       commonLinks.push(

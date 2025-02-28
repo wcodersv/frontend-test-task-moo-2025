@@ -1,4 +1,4 @@
-import { HttpResponse, http } from "msw";
+import {HttpResponse, http} from "msw";
 
 const infoHandler = http.get('/api/info', () => {
   return HttpResponse.json({
@@ -10,7 +10,7 @@ const infoHandler = http.get('/api/info', () => {
 });
 
 const loginHandler = http.post('/api/login', async (req) => {
-  const { email, password } = await req.request.json()
+  const {email, password} = await req.request.json()
 
   if (email === 'aleksei@example.com' && password === 'lkJlkn8hj') {
     return HttpResponse.json({
@@ -22,13 +22,13 @@ const loginHandler = http.post('/api/login', async (req) => {
   }
 
   return HttpResponse.json(
-    { success: false, message: 'Invalid email or password' },
-    { status: 401 }
+    {success: false, data: {message: 'Invalid email or password'}},
+    {status: 401}
   );
 });
 
 const logoutHandler = http.delete('/api/logout', async (req) => {
-   const token = req.request.url.split('token=')[1];
+  const token = req.request.url.split('token=')[1];
 
   if (token) {
     return HttpResponse.json({

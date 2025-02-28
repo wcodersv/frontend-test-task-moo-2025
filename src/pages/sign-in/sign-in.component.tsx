@@ -7,9 +7,9 @@ import {useAuthContext} from "../../providers/auth-provider";
 export const SignIn = () => {
   const {login, isLoading, error} = useAuthContext();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorSubmit, setErrorSubmit] = useState(error);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [errorSubmit, setErrorSubmit] = useState<null | string>('');
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,9 +40,9 @@ export const SignIn = () => {
         Sign In
       </Typography>
 
-      {error && (
+      {(errorSubmit || error) && (
         <Typography color="error" variant="body2" sx={{marginBottom: 2}}>
-          {errorSubmit}
+          {errorSubmit || error}
         </Typography>
       )}
 
