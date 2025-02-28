@@ -65,9 +65,31 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     }
   };
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    Cookies.remove('token');
+  const logout = async () => {
+    const token = Cookies.get('token');
+
+    if (!token) {
+      console.error('No token found');
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/logout?token=${token}`, {
+        method: 'DELETE',
+      });
+
+      const { success, data } = await response.json();
+
+      if (success) {
+        Cookies.remove('token');
+        setIsAuthenticated(false);
+        console.log('User logged out successfully');
+      } else {
+        console.error('Logout failed', data);
+      }
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   return (

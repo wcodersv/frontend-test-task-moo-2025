@@ -1,18 +1,12 @@
-import { useEffect } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import { Button, List, ListItem } from '@mui/material';
-import { useAuthContext } from '../../providers';
+import {useEffect, useCallback, useMemo} from 'react';
+import {NavLink, useLocation} from 'react-router-dom';
+import {Button, List, ListItem} from '@mui/material';
+import {useAuthContext} from '../../providers';
 import './nav.css';
-
-const links = [
-  {title: "About Us", link: "/", id: 1},
-  {title: "Profile", link: "/profile", id: 2},
-  {title: "Sign in", link: "/sign-in", id: 3},
-]
 
 export const Nav = () => {
   const location = useLocation();
-  const { isAuthenticated } = useAuthContext();
+  const {isAuthenticated, logout} = useAuthContext();
 
   const getPageTitle = () => {
     switch (location.pathname) {
@@ -30,26 +24,45 @@ export const Nav = () => {
     document.title = getPageTitle();
   }, [location.pathname]);
 
+  const links = useMemo(() => {
+    const commonLinks = [
+      {title: 'About Us', link: '/', id: 1},
+    ];
+
+    if (isAuthenticated) {
+      commonLinks.push(
+        {title: 'Profile', link: '/profile', id: 2},
+        {title: 'Sign out', link: '/sign-out', id: 3},
+      );
+    } else {
+      commonLinks.push(
+        {title: 'Sign in', link: '/sign-in', id: 4}
+      );
+    }
+
+    return commonLinks;
+  }, [isAuthenticated]);
+
+  const handleSignOut = useCallback(() => {
+    logout();
+  }, [logout]);
+
   return (
     <nav className='navbar-container'>
       <List>
-        {links.map((link) => {
-          if (link.title === "Profile" && !isAuthenticated) {
-            return null;
-          }
-          return (
-            <ListItem key={link.id}>
-              <Button
-                component={NavLink}
-                to={link.link}
-                variant={location.pathname === link.link ? 'outlined' : 'text'}
-                fullWidth
-              >
-                {link.title}
-              </Button>
-            </ListItem>
-          );
-        })}
+        {links.map((link) => (
+          <ListItem key={link.id}>
+            <Button
+              component={NavLink}
+              to={link.link}
+              variant={location.pathname === link.link ? 'outlined' : 'text'}
+              fullWidth
+              onClick={link.title === "Sign out" ? handleSignOut : undefined}
+            >
+              {link.title}
+            </Button>
+          </ListItem>
+        ))}
       </List>
     </nav>
   );

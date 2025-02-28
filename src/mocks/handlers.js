@@ -27,7 +27,20 @@ const loginHandler = http.post('/api/login', async (req) => {
   );
 });
 
+const logoutHandler = http.delete('/api/logout', async (req) => {
+   const token = req.request.url.split('token=')[1];
+
+  if (token) {
+    return HttpResponse.json({
+      success: true,
+      data: {}
+    })
+  }
+})
+
+
 export const handlers = [
   infoHandler,
   loginHandler,
+  logoutHandler,
 ];
