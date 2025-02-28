@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Typography, CircularProgress } from '@mui/material';
 
 export const AboutUs = () => {
   const [infoData, setInfoData] = useState<string | null>(null);
@@ -23,7 +24,19 @@ export const AboutUs = () => {
     fetchData();
   }, []);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <CircularProgress />;
 
-  return <p dangerouslySetInnerHTML={{ __html: infoData ?? 'No data available' }} />;
+  return (
+    <Typography
+      variant='h3'
+      dangerouslySetInnerHTML={{
+        __html: infoData ?? 'No data available',
+      }}
+      sx={{
+        fontSize: '30px',
+        color: 'text.primary',
+        lineHeight: 1.5,
+      }}
+    />
+  );
 };
