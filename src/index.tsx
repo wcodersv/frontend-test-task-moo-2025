@@ -6,12 +6,14 @@ import { AuthProvider } from './providers';
 import { worker } from './mocks/browser';
 import './app/global.css';
 
-async function enableMocking() {
-  return worker.start();
+async function enableMocking(): Promise<void> {
+  await worker.start();
 }
 
 enableMocking().then(() => {
-  createRoot(document.getElementById('root')).render(
+  const rootElement = document.getElementById('root') as HTMLElement;
+
+  createRoot(rootElement).render(
     <StrictMode>
       <AuthProvider>
         <RouterProvider router={router} />
