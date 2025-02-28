@@ -1,4 +1,6 @@
-import { NavLink} from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
+import { Button, List, ListItem } from '@mui/material';
+import './nav.css';
 
 const links = [
   {title: "About Us", link: "/", id: 1},
@@ -6,18 +8,25 @@ const links = [
   {title: "Sign in", link: "/sign-in", id: 3},
 ]
 
-
 export const Nav = () => {
+  const location = useLocation();
 
   return (
-    <nav>
-      <ul>
-        {links.map((link) => (
-          <li key={link.id}>
-            <NavLink to={link.link}>{link.title}</NavLink>
-          </li>
-        ))}
-      </ul>
+    <nav className='navbar-container'>
+        <List>
+          {links.map((link) => (
+            <ListItem key={link.id}>
+              <Button
+                component={NavLink}
+                to={link.link}
+                variant={location.pathname === link.link ? 'outlined' : 'text'}
+                fullWidth
+              >
+                {link.title}
+              </Button>
+            </ListItem>
+          ))}
+        </List>
     </nav>
-  )
-}
+  );
+};
