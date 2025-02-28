@@ -1,11 +1,11 @@
-import {createBrowserRouter} from "react-router-dom";
-import App from "../app/App";
-import { SignIn} from "../pages/sign-in";
-import {AboutUs} from "../pages/about-us";
-import {Profile} from "../pages/profile";
+import { createBrowserRouter, RouteObject } from 'react-router-dom';
+import { App } from '../app/App';
+import { SignIn } from '../pages/sign-in';
+import { AboutUs } from '../pages/about-us';
+import { Profile } from '../pages/profile';
 import { ProtectedRoute } from './protected-route-component';
 
-export const router = createBrowserRouter([
+const routes: RouteObject[] = [
   {
     path: "/",
     element: <App />,
@@ -16,6 +16,8 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute element={<Profile />} />,
       },
       { path: "sign-in", element: <SignIn /> },
-    ]
+    ],
   },
-]);
+];
+
+export const router = createBrowserRouter(routes);
