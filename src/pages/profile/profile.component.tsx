@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
-import {Box, Button, Typography, CircularProgress} from '@mui/material';
+import {Box, Button, Typography} from '@mui/material';
 import Cookies from 'js-cookie';
+import {Modal} from '../../components/modal';
 import {ProfileType, AuthorType, QuoteType} from "../../types";
 
 export const Profile = () => {
@@ -8,6 +9,9 @@ export const Profile = () => {
   const [authorData, setAuthorData] = useState<AuthorType | null>(null);
   const [quoteData, setQuoteData] = useState<QuoteType | null>(null);
   const [loading, setLoading] = useState(false);
+  const [loadingAuthorData, setLoadingAuthorData] = useState(false);
+  const [loadingQuoteData, setLoadingQuoteData] = useState(false);
+  const [open, setOpen] = useState(loading);
 
   const token = Cookies.get('token');
 
@@ -35,8 +39,10 @@ export const Profile = () => {
 
   const handleUpdateClick = async () => {
     setLoading(true);
+    setOpen(true);
 
     try {
+      setLoadingAuthorData(true);
       const authorResponse = await fetch(`/api/author?token=${token}`);
       const authorData = await authorResponse.json();
       if (!authorData.success) {
@@ -44,21 +50,36 @@ export const Profile = () => {
       }
       setAuthorData(authorData.data);
 
-
+      setLoadingAuthorData(false);
+      setLoadingQuoteData(true);
       const quoteResponse = await fetch(`/api/quote?token=${token}&authorId=${authorData.data.authorId}`);
+
       const quoteData = await quoteResponse.json();
       if (!quoteData.success) {
         throw new Error("Failed to fetch quote data");
       }
       setQuoteData(quoteData.data);
-
+      setLoadingQuoteData(false)
     } catch (error) {
       console.error("Error fetching quote or author data:", error);
     } finally {
       setLoading(false);
+      setLoadingQuoteData(false);
+      setLoadingAuthorData(false);
     }
   };
 
+  const handleCancel = () => {
+    setOpen(false);
+    setLoadingQuoteData(false);
+    setLoadingAuthorData(false);
+  }
+
+  const handleClose = () => {
+    setOpen(false);
+    setLoadingQuoteData(false);
+    setLoadingAuthorData(false);
+  };
 
   return (
     <Box
@@ -100,8 +121,6 @@ export const Profile = () => {
         </Box>
       </Box>
 
-      {loading && <CircularProgress/>}
-
       {!loading && quoteData && authorData && (
         <>
           <Typography variant="body1" style={{fontSize: '18px', fontStyle: 'italic', marginLeft: '1em'}}>
@@ -112,6 +131,15 @@ export const Profile = () => {
           </Typography>
         </>
       )}
+
+      {open && <Modal
+        open={open}
+        onClose={handleClose}
+        onCancel={handleCancel}
+        loadingAuthorData={loadingAuthorData}
+        loadingQuoteData={loadingQuoteData}
+      />
+      }
     </Box>
   );
 };
