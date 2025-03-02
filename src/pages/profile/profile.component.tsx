@@ -79,6 +79,10 @@ export const Profile = () => {
       setLoading(false);
       setLoadingQuoteData(false);
       setLoadingAuthorData(false);
+
+      setTimeout(() => {
+        setOpen(false);
+      }, 3000);
     }
   };
 
