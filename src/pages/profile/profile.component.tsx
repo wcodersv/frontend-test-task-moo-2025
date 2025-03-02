@@ -1,8 +1,8 @@
-import {useState, useEffect} from 'react';
-import {Box, Button, Typography} from '@mui/material';
+import { useState, useEffect, useRef } from 'react';
+import { Box, Button, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
-import {Modal} from '../../components/modal';
-import {ProfileType, AuthorType, QuoteType} from "../../types";
+import { Modal } from '../../components/modal';
+import { ProfileType, AuthorType, QuoteType } from "../../types";
 
 export const Profile = () => {
   const [userData, setUserData] = useState<ProfileType | null>(null);
@@ -11,16 +11,18 @@ export const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [loadingAuthorData, setLoadingAuthorData] = useState(false);
   const [loadingQuoteData, setLoadingQuoteData] = useState(false);
-  const [open, setOpen] = useState(loading);
+  const [open, setOpen] = useState(false);
 
   const token = Cookies.get('token');
+
+  const abortController = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       if (token) {
         try {
           const response = await fetch(`/api/profile?token=${token}`);
-          const {success, data} = await response.json();
+          const { success, data } = await response.json();
 
           if (success) {
             setUserData(data);
@@ -41,9 +43,15 @@ export const Profile = () => {
     setLoading(true);
     setOpen(true);
 
+    abortController.current?.abort();
+    abortController.current = new AbortController();
+
     try {
       setLoadingAuthorData(true);
-      const authorResponse = await fetch(`/api/author?token=${token}`);
+      const authorResponse = await fetch(`/api/author?token=${token}`, {
+        signal: abortController.current.signal,
+      });
+
       const authorData = await authorResponse.json();
       if (!authorData.success) {
         throw new Error("Failed to fetch author data");
@@ -52,16 +60,21 @@ export const Profile = () => {
 
       setLoadingAuthorData(false);
       setLoadingQuoteData(true);
-      const quoteResponse = await fetch(`/api/quote?token=${token}&authorId=${authorData.data.authorId}`);
+      const quoteResponse = await fetch(`/api/quote?token=${token}&authorId=${authorData.data.authorId}`, {
+        signal: abortController.current.signal,
+      });
 
       const quoteData = await quoteResponse.json();
       if (!quoteData.success) {
         throw new Error("Failed to fetch quote data");
       }
       setQuoteData(quoteData.data);
-      setLoadingQuoteData(false)
     } catch (error) {
-      console.error("Error fetching quote or author data:", error);
+      if ((error as Error).name === "AbortError") {
+        console.log("Request was aborted");
+      } else {
+        console.error("Error fetching data:", error);
+      }
     } finally {
       setLoading(false);
       setLoadingQuoteData(false);
@@ -70,16 +83,16 @@ export const Profile = () => {
   };
 
   const handleCancel = () => {
+    abortController.current?.abort();
     setOpen(false);
-    setLoadingQuoteData(false);
-    setLoadingAuthorData(false);
-  }
-
-  const handleClose = () => {
-    setOpen(false);
-    setLoadingQuoteData(false);
-    setLoadingAuthorData(false);
   };
+
+  useEffect(() => {
+    return () => {
+      abortController.current?.abort();
+    };
+  }, []);
+
 
   return (
     <Box
@@ -100,7 +113,7 @@ export const Profile = () => {
       >
         <Box
           component="img"
-          src="https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=2835&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" // Здесь укажите ссылку на ваше изображение
+          src="https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=2835&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           alt="Profile"
           sx={{
             width: '200px',
@@ -111,7 +124,7 @@ export const Profile = () => {
         />
 
         <Box>
-          <Typography variant="h3" sx={{marginBottom: 1}}>
+          <Typography variant="h3" sx={{ marginBottom: 1 }}>
             {`Welcome, ${userData?.fullname}!`}
           </Typography>
 
@@ -123,10 +136,10 @@ export const Profile = () => {
 
       {!loading && quoteData && authorData && (
         <>
-          <Typography variant="body1" style={{fontSize: '18px', fontStyle: 'italic', marginLeft: '1em'}}>
+          <Typography variant="body1" style={{ fontSize: '18px', fontStyle: 'italic', marginLeft: '1em' }}>
             "{quoteData?.quote}"
           </Typography>
-          <Typography variant="caption" style={{fontSize: '16px', textAlign: 'right', marginTop: '8px'}}>
+          <Typography variant="caption" style={{ fontSize: '16px', textAlign: 'right', marginTop: '8px' }}>
             - {authorData?.name}
           </Typography>
         </>
@@ -134,7 +147,7 @@ export const Profile = () => {
 
       {open && <Modal
         open={open}
-        onClose={handleClose}
+        onClose={() => setOpen(false)}
         onCancel={handleCancel}
         loadingAuthorData={loadingAuthorData}
         loadingQuoteData={loadingQuoteData}
