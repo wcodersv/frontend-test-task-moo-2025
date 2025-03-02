@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
 import { Modal } from '../../components/modal';
@@ -82,10 +82,10 @@ export const Profile = () => {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     abortController.current?.abort();
     setOpen(false);
-  };
+  }, []);
 
   useEffect(() => {
     return () => {
