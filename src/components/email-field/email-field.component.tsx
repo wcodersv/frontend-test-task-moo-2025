@@ -1,14 +1,14 @@
-import {Box, TextField, Typography} from "@mui/material";
+import { Box, TextField, Typography } from '@mui/material';
 
 interface EmailFieldProps {
   email: string;
   setEmail: (value: string) => void;
 }
 
-export const EmailField = ({email, setEmail}: EmailFieldProps) => {
+export const EmailField = ({ email, setEmail }: EmailFieldProps) => {
   return (
-    <Box sx={{marginBottom: '20px'}}>
-      <Typography variant='body1'>Email address</Typography>
+    <Box sx={{ marginBottom: '20px' }}>
+      <Typography variant="body1">Email address</Typography>
       <TextField
         type="email"
         fullWidth
@@ -16,15 +16,15 @@ export const EmailField = ({email, setEmail}: EmailFieldProps) => {
         onChange={(e) => setEmail(e.target.value)}
         margin="normal"
         required
-        placeholder='Enter email'
+        placeholder="Enter email"
       />
       <Typography
-        variant='body2'
+        variant="body2"
         sx={{
           color: '#757575',
-          opacity: 0.8,
+          opacity: 0.8
         }}
       >We'll never share your email with anyone else</Typography>
     </Box>
-  )
-}
+  );
+};

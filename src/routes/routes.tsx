@@ -7,18 +7,22 @@ import { SignInRedirect } from './sign-in-redirect.component';
 
 const routes: RouteObject[] = [
   {
-    path: "/",
+    path: '/',
     element: <App />,
-    errorElement:<App />,
+    errorElement: <App />,
     children: [
-      { path: "", element: <AboutUs /> },
+      { path: '', element: <AboutUs /> },
       {
         path: 'profile',
-        element: <ProtectedRoute element={<Profile />} />,
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        )
       },
-      { path: "sign-in", element: <SignInRedirect /> },
-    ],
-  },
+      { path: 'sign-in', element: <SignInRedirect /> }
+    ]
+  }
 ];
 
 export const router = createBrowserRouter(routes);

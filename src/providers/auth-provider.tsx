@@ -1,5 +1,5 @@
 import {
-  createContext, useContext, useState, useEffect
+  createContext, useContext, useState, useMemo
 } from 'react';
 import Cookies from 'js-cookie';
 
@@ -17,23 +17,17 @@ export const AuthContext = createContext<IAuthContext>({
   login: () => {},
   logout: () => {},
   isLoading: false,
-  error: null,
+  error: null
 });
 
 
-export const AuthProvider = ({children}: { children: React.ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const initialAuthState = useMemo(() => !!Cookies.get('token'), []);
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(initialAuthState);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const token = Cookies.get('token');
-    if (token) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
-  }, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
@@ -42,14 +36,14 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     try {
       const response = await fetch('/api/login', {
         method: 'POST',
-        body: JSON.stringify({email, password}),
+        body: JSON.stringify({ email, password })
       });
 
-      const {data, success} = await response.json();
+      const { data, success } = await response.json();
 
       if (success) {
         setIsAuthenticated(true);
-        Cookies.set('token', data.token, {expires: 7});
+        Cookies.set('token', data.token, { expires: 7 });
       } else {
         setIsAuthenticated(false);
         setError(data.message);
@@ -72,7 +66,7 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
 
     try {
       const response = await fetch(`/api/logout?token=${token}`, {
-        method: 'DELETE',
+        method: 'DELETE'
       });
 
       const { success, data } = await response.json();

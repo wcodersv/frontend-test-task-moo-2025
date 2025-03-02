@@ -1,4 +1,4 @@
-import {HttpResponse, http} from "msw";
+import { HttpResponse, http } from 'msw';
 import authors from './mock-data-author.json';
 import quotes from './mock-data-quote.json';
 
@@ -9,39 +9,39 @@ const infoHandler = http.get('/api/info', () => {
   return HttpResponse.json({
     success: true,
     data: {
-      info: "Some information about the <b>company</b>."
+      info: 'Some information about the <b>company</b>.'
     }
   });
 });
 
 const loginHandler = http.post('/api/login', async (req) => {
-  const {email, password} = await req.request.json()
+  const { email, password } = await req.request.json();
 
   if (email === 'aleksei@example.com' && password === 'lkJlkn8hj') {
     return HttpResponse.json({
       success: true,
       data: {
-        token: tokenAleks,
-      },
+        token: tokenAleks
+      }
     });
   }
 
   return HttpResponse.json(
-    {success: false, data: {message: 'Invalid email or password'}},
-    {status: 401}
+    { success: false, data: { message: 'Invalid email or password' } },
+    { status: 401 }
   );
 });
 
-const logoutHandler = http.delete('/api/logout',  (req) => {
+const logoutHandler = http.delete('/api/logout', (req) => {
   const token = req.request.url.split('token=')[1];
 
   if (token) {
     return HttpResponse.json({
       success: true,
       data: {}
-    })
+    });
   }
-})
+});
 
 
 const profileHandler = http.get('/api/profile', (req) => {
@@ -51,8 +51,8 @@ const profileHandler = http.get('/api/profile', (req) => {
     return HttpResponse.json({
       success: true,
       data: {
-        fullname: "Aleksei K",
-        email: "aleksei@example.com"
+        fullname: 'Aleksei K',
+        email: 'aleksei@example.com'
       }
     });
   }
@@ -105,5 +105,5 @@ export const handlers = [
   logoutHandler,
   profileHandler,
   authorHandler,
-  quoteHandler,
+  quoteHandler
 ];

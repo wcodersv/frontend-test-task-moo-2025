@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { Box, Button, Typography } from '@mui/material';
 import Cookies from 'js-cookie';
 import { Modal } from '../../components/modal';
-import { ProfileType, AuthorType, QuoteType } from "../../types";
+import { ProfileType, AuthorType, QuoteType } from '../../types';
 
 export const Profile = () => {
   const [userData, setUserData] = useState<ProfileType | null>(null);
@@ -27,16 +27,16 @@ export const Profile = () => {
           if (success) {
             setUserData(data);
           } else {
-            console.error("Failed to fetch user data");
+            console.error('Failed to fetch user data');
           }
         } catch (error) {
-          console.error("Error fetching profile data:", error);
+          console.error('Error fetching profile data:', error);
         }
       }
     };
 
     fetchData();
-  }, [token]);
+  }, []);
 
 
   const handleUpdateClick = async () => {
@@ -49,31 +49,31 @@ export const Profile = () => {
     try {
       setLoadingAuthorData(true);
       const authorResponse = await fetch(`/api/author?token=${token}`, {
-        signal: abortController.current.signal,
+        signal: abortController.current.signal
       });
 
       const authorData = await authorResponse.json();
       if (!authorData.success) {
-        throw new Error("Failed to fetch author data");
+        throw new Error('Failed to fetch author data');
       }
       setAuthorData(authorData.data);
 
       setLoadingAuthorData(false);
       setLoadingQuoteData(true);
       const quoteResponse = await fetch(`/api/quote?token=${token}&authorId=${authorData.data.authorId}`, {
-        signal: abortController.current.signal,
+        signal: abortController.current.signal
       });
 
       const quoteData = await quoteResponse.json();
       if (!quoteData.success) {
-        throw new Error("Failed to fetch quote data");
+        throw new Error('Failed to fetch quote data');
       }
       setQuoteData(quoteData.data);
     } catch (error) {
-      if ((error as Error).name === "AbortError") {
-        console.log("Request was aborted");
+      if ((error as Error).name === 'AbortError') {
+        console.log('Request was aborted');
       } else {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
       }
     } finally {
       setLoading(false);
@@ -100,7 +100,7 @@ export const Profile = () => {
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        gap: '30px',
+        gap: '30px'
       }}
     >
       <Box
@@ -108,7 +108,7 @@ export const Profile = () => {
           display: 'grid',
           gridTemplateColumns: '250px 1fr',
           width: '100%',
-          padding: 2,
+          padding: 2
         }}
       >
         <Box
@@ -119,7 +119,7 @@ export const Profile = () => {
             width: '200px',
             height: '200px',
             borderRadius: '100px',
-            objectFit: 'cover',
+            objectFit: 'cover'
           }}
         />
 
@@ -128,7 +128,7 @@ export const Profile = () => {
             {`Welcome, ${userData?.fullname}!`}
           </Typography>
 
-          <Button type="submit" color='primary' variant="contained" onClick={handleUpdateClick}>
+          <Button type="submit" color="primary" variant="contained" onClick={handleUpdateClick}>
             Update
           </Button>
         </Box>

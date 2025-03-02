@@ -28,14 +28,14 @@ export const AboutUs = () => {
 
   return (
     <Typography
-      variant='h3'
+      variant="h3"
       dangerouslySetInnerHTML={{
-        __html: infoData ?? 'No data available',
+        __html: infoData ?? 'No data available'
       }}
       sx={{
         fontSize: '30px',
         color: 'text.primary',
-        lineHeight: 1.5,
+        lineHeight: 1.5
       }}
     />
   );

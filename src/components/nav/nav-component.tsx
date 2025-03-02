@@ -1,12 +1,19 @@
-import {useEffect, useCallback, useMemo} from 'react';
-import {NavLink, useLocation} from 'react-router-dom';
-import {Button, List, ListItem} from '@mui/material';
-import {useAuthContext} from '../../providers';
+import { useEffect, useCallback, useMemo } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Button, List, ListItem } from '@mui/material';
+import { useAuthContext } from '../../providers';
 import './nav.css';
 
 export const Nav = () => {
   const location = useLocation();
-  const {isAuthenticated, logout} = useAuthContext();
+  const navigate = useNavigate();
+  const { isAuthenticated, logout } = useAuthContext();
+
+  useEffect(() => {
+    if (location.pathname === '/sign-out') {
+      navigate('/');
+    }
+  }, [location.pathname]);
 
   const getPageTitle = () => {
     switch (location.pathname) {
@@ -26,17 +33,17 @@ export const Nav = () => {
 
   const links = useMemo(() => {
     const commonLinks = [
-      {title: 'About Us', link: '/', id: 1},
+      { title: 'About Us', link: '/', id: 1 }
     ];
 
     if (isAuthenticated) {
       commonLinks.push(
-        {title: 'Profile', link: '/profile', id: 2},
-        {title: 'Sign out', link: '/', id: 3},
+        { title: 'Profile', link: '/profile', id: 2 },
+        { title: 'Sign out', link: '/sign-out', id: 3 }
       );
     } else {
       commonLinks.push(
-        {title: 'Sign in', link: '/sign-in', id: 4}
+        { title: 'Sign in', link: '/sign-in', id: 4 }
       );
     }
 
@@ -48,7 +55,7 @@ export const Nav = () => {
   }, [logout]);
 
   return (
-    <nav className='navbar-container'>
+    <nav className="navbar-container">
       <List>
         {links.map((link) => (
           <ListItem key={link.id}>
@@ -57,7 +64,7 @@ export const Nav = () => {
               to={link.link}
               variant={location.pathname === link.link ? 'outlined' : 'text'}
               fullWidth
-              onClick={link.title === "Sign out" ? handleSignOut : undefined}
+              onClick={link.title === 'Sign out' ? handleSignOut : undefined}
             >
               {link.title}
             </Button>
