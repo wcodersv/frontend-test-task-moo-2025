@@ -1,11 +1,11 @@
-import {useState} from 'react';
-import {Button, Box, Typography} from '@mui/material';
-import {EmailField} from "../../components/email-field";
-import {PasswordField} from "../../components/password-field";
-import {useAuthContext} from "../../providers/auth-provider";
+import { useState } from 'react';
+import { Button, Box, Typography } from '@mui/material';
+import { EmailField } from '../../components/email-field';
+import { PasswordField } from '../../components/password-field';
+import { useAuthContext } from '../../providers/auth-provider';
 
 export const SignIn = () => {
-  const {login, isLoading, error} = useAuthContext();
+  const { login, isLoading, error } = useAuthContext();
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -33,7 +33,7 @@ export const SignIn = () => {
         width: '100%',
         maxWidth: '500px',
         margin: '0 auto',
-        padding: 2,
+        padding: 2
       }}
     >
       <Typography variant="h3" gutterBottom>
@@ -41,21 +41,21 @@ export const SignIn = () => {
       </Typography>
 
       {(errorSubmit || error) && (
-        <Typography color="error" variant="body2" sx={{marginBottom: 2}}>
+        <Typography color="error" variant="body2" sx={{ marginBottom: 2 }}>
           {errorSubmit || error}
         </Typography>
       )}
 
-      <form onSubmit={handleSubmit} style={{width: '100%'}}>
-        <EmailField email={email} setEmail={setEmail}/>
-        <PasswordField password={password} setPassword={setPassword}/>
+      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+        <EmailField email={email} setEmail={setEmail} />
+        <PasswordField password={password} setPassword={setPassword} />
 
         <Button
           type="submit"
           variant="contained"
           color="primary"
           fullWidth
-          sx={{marginTop: 2}}
+          sx={{ marginTop: 2 }}
         >
           {isLoading ? 'Logging in...' : 'Log In'}
         </Button>

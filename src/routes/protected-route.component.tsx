@@ -3,11 +3,11 @@ import { Navigate } from 'react-router-dom';
 import { useAuthContext } from '../providers';
 
 interface ProtectedRouteProps {
-  element: ReactNode;
+  children: ReactNode;
 }
 
-export const ProtectedRoute= ({ element }: ProtectedRouteProps) => {
+export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isAuthenticated } = useAuthContext();
 
-  return isAuthenticated ? element : <Navigate to="/sign-in"/>;
+  return isAuthenticated ? children : <Navigate to="/sign-in" />;
 };
