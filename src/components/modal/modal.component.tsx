@@ -39,11 +39,11 @@ export const Modal = ({
       <DialogContent>
         <Stack spacing={2}>
           <Typography variant="body1">
-            {`Step 1: Requesting author... `}
+            {`Step 1: Requesting author...`}{` `}
             {loadingAuthorData ? <CircularProgress size={16} /> : 'Completed'}
           </Typography>
           <Typography variant="body1">
-            {`Step 2: Requesting quote... `}
+            {`Step 2: Requesting quote...`}{` `}
             {!loadingAuthorData && (loadingQuoteData ? <CircularProgress size={16} /> : 'Completed')}
           </Typography>
         </Stack>
