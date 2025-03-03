@@ -28,7 +28,7 @@ describe('ProtectedRoute component', () => {
     expect(screen.getByText('Protected Content')).toBeInTheDocument();
   });
 
-  it('should redirect to /sign-in when user is not authenticated', () => {
+  test('should redirect to /sign-in when user is not authenticated', () => {
     useAuthContext.mockReturnValue({ isAuthenticated: false });
     render(
       <MemoryRouter initialEntries={['/protected']}>
