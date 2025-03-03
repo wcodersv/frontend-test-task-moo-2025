@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Box, Typography } from '@mui/material';
 import { EmailField } from '../../components/email-field';
 import { PasswordField } from '../../components/password-field';
-import { useAuthContext } from '../../providers/auth-provider';
+import { useAuthContext } from '../../providers';
 
 export const SignIn = () => {
   const { login, isLoading, error } = useAuthContext();
