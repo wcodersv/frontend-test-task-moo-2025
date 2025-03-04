@@ -1,11 +1,13 @@
 import { HttpResponse, http } from 'msw';
+import { RequestHandler } from 'msw';
 import authors from './mock-data-author.json';
 import quotes from './mock-data-quote.json';
+import type { AuthorType, QuoteType, LoginRequest } from '../types';
 
 const tokenAleks = 'fb566635a66295da0c8ad3f467c32dcf';
-const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)];
+const getRandomElement = <T>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
-const infoHandler = http.get('/api/info', () => {
+const infoHandler: RequestHandler = http.get('/api/info', () => {
   return HttpResponse.json({
     success: true,
     data: {
@@ -14,8 +16,8 @@ const infoHandler = http.get('/api/info', () => {
   });
 });
 
-const loginHandler = http.post('/api/login', async (req) => {
-  const { email, password } = await req.request.json();
+const loginHandler: RequestHandler = http.post('/api/login', async (req) => {
+  const { email, password } = await req.request.json() as LoginRequest;
 
   if (email === 'aleksei@example.com' && password === 'lkJlkn8hj') {
     return HttpResponse.json({
@@ -32,7 +34,7 @@ const loginHandler = http.post('/api/login', async (req) => {
   );
 });
 
-const logoutHandler = http.delete('/api/logout', (req) => {
+const logoutHandler: RequestHandler = http.delete('/api/logout', (req) => {
   const token = req.request.url.split('token=')[1];
 
   if (token) {
@@ -43,8 +45,7 @@ const logoutHandler = http.delete('/api/logout', (req) => {
   }
 });
 
-
-const profileHandler = http.get('/api/profile', (req) => {
+const profileHandler: RequestHandler = http.get('/api/profile', (req) => {
   const token = req.request.url.split('token=')[1];
 
   if (token) {
@@ -58,13 +59,13 @@ const profileHandler = http.get('/api/profile', (req) => {
   }
 });
 
-const authorHandler = http.get('/api/author', (req) => {
+const authorHandler: RequestHandler = http.get('/api/author', (req) => {
   const token = req.request.url.split('token=')[1];
 
   if (token) {
     return new Promise(resolve => {
       setTimeout(() => {
-        const randomAuthor = getRandomElement(authors);
+        const randomAuthor = getRandomElement<AuthorType>(authors);
 
         resolve(HttpResponse.json({
           success: true,
@@ -75,16 +76,15 @@ const authorHandler = http.get('/api/author', (req) => {
   }
 });
 
-const quoteHandler = http.get('/api/quote', (req) => {
+const quoteHandler: RequestHandler = http.get('/api/quote', (req) => {
   const token = req.request.url.split('token=')[1];
   const authorId = req.request.url.split('authorId=')[1];
 
-
   if (token && authorId) {
-    const filteredQuotes = quotes.filter(q => q.authorId === Number(authorId));
+    const filteredQuotes = quotes.filter((q: QuoteType) => q.authorId === Number(authorId));
 
     if (filteredQuotes.length > 0) {
-      const randomQuote = getRandomElement(filteredQuotes);
+      const randomQuote = getRandomElement<QuoteType>(filteredQuotes);
 
       return new Promise(resolve => {
         setTimeout(() => {
@@ -98,8 +98,7 @@ const quoteHandler = http.get('/api/quote', (req) => {
   }
 });
 
-
-export const handlers = [
+export const handlers: RequestHandler[] = [
   infoHandler,
   loginHandler,
   logoutHandler,

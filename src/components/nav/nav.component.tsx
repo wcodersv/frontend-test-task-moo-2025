@@ -18,7 +18,7 @@ export const Nav = () => {
   const getPageTitle = () => {
     switch (location.pathname) {
       case '/profile':
-        return 'Profile Page';
+        return 'Profile';
       case '/sign-in':
         return 'Sign In';
       case '/':
